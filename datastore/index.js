@@ -35,31 +35,30 @@ exports.readAll = (callback) => {
       return { id, text };
     });
     callback(null, data);
-      /* BAD RABBIT HOLE VERSION:
-      fs.readFile(path.join(__dirname, '..', 'test', 'testData', text), (err, bodyText) => {
-        let elementBodyText = bodyText.toString();
-        data.push({ id, text: elementBodyText });
-        if (items.length === 0 || id === items.length - 1) {
-          callback(null, data);
-        }
-      });
+    /* BAD RABBIT HOLE VERSION:
+    fs.readFile(path.join(__dirname, '..', 'test', 'testData', text), (err, bodyText) => {
+      let elementBodyText = bodyText.toString();
+      data.push({ id, text: elementBodyText });
+      if (items.length === 0 || id === items.length - 1) {
+        callback(null, data);
+      }
     });
-    if (!items.length) {
-      callback(null, data);
-    }
-    */
+  });
+  if (!items.length) {
+    callback(null, data);
+  }
+  */
   });
 };
 
 exports.readOne = (id, callback) => {
-    // var text = items[id];
-    fs.readFile(path.join(__dirname, '..', 'test', 'testData', id), (err, text) => {
-      if (!text) {
-        callback(new Error(`No item with id: ${id}`));
-      } else {
-        callback(null, { id, text });
-      }
-    });
+  fs.readFile(path.join(__dirname, '..', 'test', 'testData', `${id}.txt`), (err, text) => {
+    if (!text) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      callback(null, { id, text: text.toString() });
+    }
+  });
 };
 
 exports.update = (id, text, callback) => {
