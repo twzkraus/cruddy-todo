@@ -30,11 +30,21 @@ exports.readAll = (callback) => {
   // items come from the target folder
   // once you get to target folder, use map:
   let thisPath = path.join(__dirname, '..', 'test', 'testData');
+  let data = [];
   fs.readdir(thisPath, (err, items) => {
-    var data = _.map(items, (text, id) => {
-      return { id, text };
+    items.forEach((text, id) => {
+    // var data = _.map(items, (text, id) => {
+      fs.readFile(path.join(__dirname, '..', 'test', 'testData', text), (err, bodyText) => {
+        let elementBodyText = bodyText.toString();
+        data.push({ id, text: elementBodyText });
+        if (items.length === 0 || id === items.length - 1) {
+          callback(null, data);
+        }
+      });
     });
-    callback(null, data);
+    if (!items.length) {
+      callback(null, data);
+    }
   });
 };
 
