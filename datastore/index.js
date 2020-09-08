@@ -30,10 +30,12 @@ exports.readAll = (callback) => {
   // items come from the target folder
   // once you get to target folder, use map:
   let thisPath = path.join(__dirname, '..', 'test', 'testData');
-  let data = [];
   fs.readdir(thisPath, (err, items) => {
-    items.forEach((text, id) => {
-    // var data = _.map(items, (text, id) => {
+    var data = _.map(items, (text, id) => {
+      return { id, text };
+    });
+    callback(null, data);
+      /* BAD RABBIT HOLE VERSION:
       fs.readFile(path.join(__dirname, '..', 'test', 'testData', text), (err, bodyText) => {
         let elementBodyText = bodyText.toString();
         data.push({ id, text: elementBodyText });
@@ -45,16 +47,19 @@ exports.readAll = (callback) => {
     if (!items.length) {
       callback(null, data);
     }
+    */
   });
 };
 
 exports.readOne = (id, callback) => {
-  var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
-  }
+    // var text = items[id];
+    fs.readFile(path.join(__dirname, '..', 'test', 'testData', id), (err, text) => {
+      if (!text) {
+        callback(new Error(`No item with id: ${id}`));
+      } else {
+        callback(null, { id, text });
+      }
+    });
 };
 
 exports.update = (id, text, callback) => {
