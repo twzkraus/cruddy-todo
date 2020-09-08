@@ -15,7 +15,6 @@ exports.create = (text, callback) => {
       items[id] = text;
       let thisPath = path.join(__dirname, '..', 'test', 'testData', `${id}.txt`);
       fs.writeFile(thisPath, items[id], (err) => {
-        // console.log(id);
         if (err) {
           throw new Error('error writing file');
         } else {
@@ -27,10 +26,16 @@ exports.create = (text, callback) => {
 };
 
 exports.readAll = (callback) => {
-  var data = _.map(items, (text, id) => {
-    return { id, text };
+  // need to return an array of todos to client app whenever a get request to the collection route occurs
+  // items come from the target folder
+  // once you get to target folder, use map:
+  let thisPath = path.join(__dirname, '..', 'test', 'testData');
+  fs.readdir(thisPath, (err, items) => {
+    var data = _.map(items, (text, id) => {
+      return { id, text };
+    });
+    callback(null, data);
   });
-  callback(null, data);
 };
 
 exports.readOne = (id, callback) => {
