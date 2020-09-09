@@ -13,7 +13,7 @@ exports.create = (text, callback) => {
       throw new Error();
     } else {
       items[id] = text;
-      let thisPath = path.join(__dirname, '..', 'test', 'testData', `${id}.txt`);
+      let thisPath = path.join(exports.dataDir, `${id}.txt`);
       fs.writeFile(thisPath, items[id], (err) => {
         if (err) {
           throw new Error('error writing file');
@@ -29,8 +29,7 @@ exports.readAll = (callback) => {
   // need to return an array of todos to client app whenever a get request to the collection route occurs
   // items come from the target folder
   // once you get to target folder, use map:
-  let thisPath = path.join(__dirname, '..', 'test', 'testData');
-  fs.readdir(thisPath, (err, items) => {
+  fs.readdir(exports.dataDir, (err, items) => {
     var data = _.map(items, (text, id) => {
       return { id, text };
     });
@@ -62,12 +61,11 @@ exports.readOne = (id, callback) => {
 };
 
 exports.update = (id, text, callback) => {
-  let thisPath = path.join(__dirname, '..', 'test', 'testData', `${id}.txt`);
-  fs.readdir(path.join(thisPath, '..'), (err, items) => {
+  fs.readdir(exports.dataDir, (err, items) => {
     if (items.indexOf(`${id}.txt`) < 0) {
       callback(new Error(`No item with id: ${id}`));
     } else {
-      fs.writeFile(thisPath, text, (err) => {
+      fs.writeFile(path.join(exports.dataDir, `${id}.txt`), text, (err) => {
         if (err) {
           callback(new Error(`No item with id: ${id}`));
         } else {
@@ -79,8 +77,7 @@ exports.update = (id, text, callback) => {
 };
 
 exports.delete = (id, callback) => {
-  let thisPath = path.join(__dirname, '..', 'test', 'testData', `${id}.txt`);
-  fs.unlink(path.join(thisPath), (err) => {
+  fs.unlink(path.join(exports.dataDir, `${id}.txt`), (err) => {
     if (err) {
       callback(new Error(`No item with id: ${id}`));
     } else {
