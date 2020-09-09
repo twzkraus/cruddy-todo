@@ -8,20 +8,18 @@ var items = {};
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
 exports.create = (text, callback) => {
-  var id = counter.getNextUniqueId((err, id) => {
+  counter.getNextUniqueId((err, id) => {
     if (err) {
-      throw new Error();
-    } else {
-      items[id] = text;
-      let thisPath = path.join(exports.dataDir, `${id}.txt`);
-      fs.writeFile(thisPath, items[id], (err) => {
-        if (err) {
-          throw new Error('error writing file');
-        } else {
-          callback(null, { id, text });
-        }
-      });
+      return callback(err);
     }
+    let thisPath = path.join(exports.dataDir, `${id}.txt`);
+    fs.writeFile(thisPath, text, (err) => {
+      if (err) {
+        callback(err);
+      } else {
+        callback(null, { id, text });
+      }
+    });
   });
 };
 
@@ -30,6 +28,9 @@ exports.readAll = (callback) => {
   // items come from the target folder
   // once you get to target folder, use map:
   fs.readdir(exports.dataDir, (err, items) => {
+    if (err) {
+      return callback(err);
+    }
 
     let data = [];
     items.forEach((fileName, id) => {
