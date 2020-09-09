@@ -80,22 +80,13 @@ exports.update = (id, text, callback) => {
 
 exports.delete = (id, callback) => {
   let thisPath = path.join(__dirname, '..', 'test', 'testData', `${id}.txt`);
-  fs.readdir(path.join(thisPath, '..'), (err, items) => {
-    if (items.indexOf(`${id}.txt`) < 0) {
+  fs.unlink(path.join(thisPath), (err) => {
+    if (err) {
       callback(new Error(`No item with id: ${id}`));
+    } else {
+      callback();
     }
-    items.splice(id, 1);
-    callback();
   });
-
-  // var item = items[id];
-  // delete items[id];
-  // if (!item) {
-  //   // report an error if item not found
-  //   callback(new Error(`No item with id: ${id}`));
-  // } else {
-  //   callback();
-  // }
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
